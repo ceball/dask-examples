@@ -16,14 +16,33 @@ install:
     - conda update conda
 
     # Install dependencies
+    # (TODO: I modified the environment, but that's unrelated to nbsite: the pip stuff didn't install on my laptop, and
+    # I didn't want to spend time investigating yet...)
     - conda env create -n test -f binder/environment.yml
     - source activate test
 
     # Install testing dependencies
     - conda install pathlib nbconvert nbformat jupyter_client ipykernel
 
+    # Install nbsite
+    - conda install -c pyviz nbsite sphinx_ioam_theme
+
 script:
-    - python $TRAVIS_BUILD_DIR/.tests/nbrun.py
+    # TODO these timed out for me (note: nbsite currently lacks skip and timeout options)
+    - rm -rf embarrassingly-parallel.ipynb delayed.ipynb
+    - nbsite generate-rst --project-name dask --org ceball --repo dask-examples --examples .
+    - nbsite build --what=html --examples . --examples-assets='.images' --output=builtdocs 
+    # for gh-pages
+    - touch ./builtdocs/.nojekyll # for github pages
+    - nbsite_cleandisthtml.py ./builtdocs take_a_chance
+
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: ./builtdocs
+    on:
+      all_branches: true
 
 notifications:
   email: false

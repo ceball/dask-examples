@@ -15,7 +15,6 @@ dependencies:
   - nomkl
   - h5py
   - py-xgboost
-  - pip:
-    - graphviz
-    - dask_xgboost
-    - seaborn
+  - python-graphviz
+  - seaborn
+  - dask-xgboost
