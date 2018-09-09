@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8"/>
+  <title>
+   01 Data Access — Dask Examples 0.0.1 documentation
+  </title>
+  <meta content="Short description for html meta description." name="description"/>
+  <meta content="dask contributors" name="author"/>
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js">
+  </script>
+  <script>
+   WebFont.load({
+      google: {
+        families: ['Source Sans Pro']
+      }
+    });
+  </script>
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="../_static/css/main.css" rel="stylesheet"/>
+  <link href="../_static/nbsite.css" rel="stylesheet"/>
+  <!-- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+  </script>
+  <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript">
+  </script>
+  <script src="../_static/js/main.js">
+  </script>
+  <script src="../_static/nbsite.js">
+  </script>
+  <script src="../_static/require.js">
+  </script>
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="../_static/images/favicon.ico" rel="icon" type="image/png"/>
+  <!-- Canonical
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="/dataframes/01_Data_Access.html" rel="canonical"/>
+ </head>
+ <body class="">
+  <header class="navigation">
+   <div class="wrapper">
+    <a class="logo" href="../index.html">
+     <img alt="Logo" src="../_static/images/logo.png"/>
+    </a>
+    <a class="navigation-menu logo-text" href="../index.html">
+     Dask Examples
+    </a>
+    <a class="navigation-menu-button" href="javascript:void(0)" id="js-mobile-menu">
+     Menu
+    </a>
+    <nav>
+     <ul class="navigation-menu show" id="js-navigation-menu">
+      <li class="nav-link">
+       <div style="display:inline-block;vertical-align: middle;">
+        <div class="search-bar">
+         <form action="../search.html" method="get" role="search">
+          <input name="q" placeholder="Search" type="search"/>
+          <button type="submit">
+           <img alt="Search Icon" src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon-black.png"/>
+          </button>
+         </form>
+        </div>
+       </div>
+      </li>
+     </ul>
+    </nav>
+   </div>
+  </header>
+  <!-- MAIN BODY OF DOCS –––––––––––––––––– -->
+  <div class="docs section">
+   <div id="hacketyhackhack">
+    <!-- style="width:20%;margin-right: 100px;"> -->
+    <!--style="display: none;"> style="display:none;"> -->
+    <div class="toc" style="width:15%; margin-right:20px;">
+     <ul class="current">
+      <li class="toctree-l1">
+       <a class="reference internal" href="../index.html">
+        Introduction
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../Arrays.html">
+        Arrays
+       </a>
+      </li>
+      <li class="toctree-l1 current">
+       <a class="reference internal" href="index.html">
+        Dataframes
+       </a>
+       <ul class="current">
+        <li class="toctree-l2">
+         <a class="reference internal" href="00_Introduction.html">
+          00 Introduction
+         </a>
+        </li>
+        <li class="toctree-l2 current">
+         <a class="current reference internal" href="#">
+          01 Data Access
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="02_GroupBy.html">
+          02 GroupBy
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../Futures.html">
+        Futures
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../machine_learning/index.html">
+        Machine Learning
+       </a>
+      </li>
+     </ul>
+    </div>
+   </div>
+   <div class="content">
+    <!-- style="max-width:80%;margin-left:auto;margin-right: auto;">-->
+    <div class="section" id="data-access">
+     <h1>
+      01 Data Access
+      <a class="headerlink" href="#data-access" title="Permalink to this headline">
+       ¶
+      </a>
+     </h1>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         Dask Dataframes can read and store data in many of the same formats as Pandas dataframes.  In this example we read and write data with the popular CSV and Parquet formats, and discuss best practices when using these formats.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [1]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">HTML</span>
+
+<span class="n">HTML</span><span class="p">(</span><span class="s1">'&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/0eEsIA0O1iE?rel=0&amp;amp;controls=0&amp;amp;showinfo=0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;'</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[1]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <iframe allowfullscreen="" frameborder="0" height="315" src="https://www.youtube.com/embed/0eEsIA0O1iE?rel=0&amp;controls=0&amp;showinfo=0" width="560">
+          </iframe>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Start-Dask-Client-for-Dashboard">
+         Start Dask Client for Dashboard
+         <a class="anchor-link" href="#Start-Dask-Client-for-Dashboard">
+          ¶
+         </a>
+        </h2>
+        <p>
+         Starting the Dask Client is optional.  It will provide a dashboard which 
+is useful to gain insight on the computation.
+        </p>
+        <p>
+         The link to the dashboard will become visible when you create the client below.  We recommend having it open on one side of your screen while using your notebook on the other side.  This can take some effort to arrange your windows, but seeing them both at the same is very useful when learning.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [2]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">n_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">memory_limit</span><span class="o">=</span><span class="s1">'2GB'</span><span class="p">)</span>
+<span class="n">client</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[2]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <table style="border: 2px solid white;">
+           <tbody>
+            <tr>
+             <td style="vertical-align: top; border: 0px solid white">
+              <h3>
+               Client
+              </h3>
+              <ul>
+               <li>
+                <b>
+                 Scheduler:
+                </b>
+                inproc://172.17.0.19/3830/1
+               </li>
+               <li>
+                <b>
+                 Dashboard:
+                </b>
+                <a href="http://localhost:8787/status" target="_blank">
+                 http://localhost:8787/status
+                </a>
+               </li>
+              </ul>
+             </td>
+             <td style="vertical-align: top; border: 0px solid white">
+              <h3>
+               Cluster
+              </h3>
+              <ul>
+               <li>
+                <b>
+                 Workers:
+                </b>
+                1
+               </li>
+               <li>
+                <b>
+                 Cores:
+                </b>
+                4
+               </li>
+               <li>
+                <b>
+                 Memory:
+                </b>
+                2.00 GB
+               </li>
+              </ul>
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Create-artificial-dataset">
+         Create artificial dataset
+         <a class="anchor-link" href="#Create-artificial-dataset">
+          ¶
+         </a>
+        </h2>
+        <p>
+         First we create an artificial dataset and write it to many CSV files.
+        </p>
+        <p>
+         You don't need to understand this section, we're just creating a dataset for the rest of the notebook.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [3]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">import</span> <span class="nn">dask</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">timeseries</span><span class="p">()</span>
+<span class="n">df</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[3]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <div>
+           <strong>
+            Dask DataFrame Structure:
+           </strong>
+          </div>
+          <div>
+           <style scoped="">
+            .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+           </style>
+           <table border="1" class="dataframe">
+            <thead>
+             <tr style="text-align: right;">
+              <th>
+              </th>
+              <th>
+               id
+              </th>
+              <th>
+               name
+              </th>
+              <th>
+               x
+              </th>
+              <th>
+               y
+              </th>
+             </tr>
+             <tr>
+              <th>
+               npartitions=30
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <th>
+               2000-01-01
+              </th>
+              <td>
+               int64
+              </td>
+              <td>
+               object
+              </td>
+              <td>
+               float64
+              </td>
+              <td>
+               float64
+              </td>
+             </tr>
+             <tr>
+              <th>
+               2000-01-02
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+               ...
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+               2000-01-30
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+               2000-01-31
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div>
+           Dask Name: make-timeseries, 30 tasks
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [4]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">'data'</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">'data'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="sd">""" Provide date for filename given index</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; name(0)</span>
+<span class="sd">    '2000-01-01'</span>
+<span class="sd">    &gt;&gt;&gt; name(10)</span>
+<span class="sd">    '2000-01-11'</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'data/*.csv'</span><span class="p">,</span> <span class="n">name_function</span><span class="o">=</span><span class="n">name</span><span class="p">);</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Read-CSV-files">
+         Read CSV files
+         <a class="anchor-link" href="#Read-CSV-files">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We now have many CSV files in our data directory, one for each day in the month of January 2000.  Each CSV file holds timeseries data for that day.  We can read all of them as one logical dataframe using the
+         <code>
+          dd.read_csv
+         </code>
+         function with a glob string.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [5]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="o">!</span>ls data/*.csv <span class="p">|</span> head
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>data/2000-01-01.csv
+data/2000-01-02.csv
+data/2000-01-03.csv
+data/2000-01-04.csv
+data/2000-01-05.csv
+data/2000-01-06.csv
+data/2000-01-07.csv
+data/2000-01-08.csv
+data/2000-01-09.csv
+data/2000-01-10.csv
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [6]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="o">!</span>head data/2000-01-01.csv
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>timestamp,id,name,x,y
+2000-01-01 00:00:00,1007,Alice,0.13273968247244894,-0.3591496304938018
+2000-01-01 00:00:01,1019,Ingrid,-0.7211667658962952,0.2155833582807316
+2000-01-01 00:00:02,1031,Laura,-0.8483624532309562,0.5310943164721875
+2000-01-01 00:00:03,1002,Norbert,0.9331389807942909,-0.16486881516840524
+2000-01-01 00:00:04,1007,Patricia,0.021305652105759743,-0.7485580429393366
+2000-01-01 00:00:05,978,Bob,0.37621395053139883,0.13591382131033947
+2000-01-01 00:00:06,990,Michael,-0.14773839388319754,0.5917850291201492
+2000-01-01 00:00:07,957,Yvonne,0.47067965454372684,-0.11887037102759024
+2000-01-01 00:00:08,1029,Wendy,0.9886915809624768,-0.08455511231906487
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [7]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="o">!</span>head data/2000-01-30.csv
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>timestamp,id,name,x,y
+2000-01-30 00:00:00,1038,Norbert,-0.0972825061551259,0.047001564478093893
+2000-01-30 00:00:01,989,Zelda,0.8952342172683243,0.8398718057691255
+2000-01-30 00:00:02,1000,Xavier,-0.7385854166447912,0.3333609469886645
+2000-01-30 00:00:03,998,Kevin,-0.21613818836346232,0.7998954531843563
+2000-01-30 00:00:04,968,Kevin,0.3020353987336595,0.3323407119013779
+2000-01-30 00:00:05,945,Alice,0.5354632579149492,-0.8185093914324069
+2000-01-30 00:00:06,988,Hannah,0.32565849954482506,-0.8614212408573039
+2000-01-30 00:00:07,986,Sarah,-0.5452498652120161,0.35720031457057777
+2000-01-30 00:00:08,1014,Quinn,0.8952205211281721,-0.6288167583068145
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         We can read one file with
+         <code>
+          pandas.read_csv
+         </code>
+         or many files with
+         <code>
+          dask.dataframe.read_csv
+         </code>
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [8]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/2000-01-01.csv'</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[8]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <div>
+           <style scoped="">
+            .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+           </style>
+           <table border="1" class="dataframe">
+            <thead>
+             <tr style="text-align: right;">
+              <th>
+              </th>
+              <th>
+               timestamp
+              </th>
+              <th>
+               id
+              </th>
+              <th>
+               name
+              </th>
+              <th>
+               x
+              </th>
+              <th>
+               y
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <th>
+               0
+              </th>
+              <td>
+               2000-01-01 00:00:00
+              </td>
+              <td>
+               1007
+              </td>
+              <td>
+               Alice
+              </td>
+              <td>
+               0.132740
+              </td>
+              <td>
+               -0.359150
+              </td>
+             </tr>
+             <tr>
+              <th>
+               1
+              </th>
+              <td>
+               2000-01-01 00:00:01
+              </td>
+              <td>
+               1019
+              </td>
+              <td>
+               Ingrid
+              </td>
+              <td>
+               -0.721167
+              </td>
+              <td>
+               0.215583
+              </td>
+             </tr>
+             <tr>
+              <th>
+               2
+              </th>
+              <td>
+               2000-01-01 00:00:02
+              </td>
+              <td>
+               1031
+              </td>
+              <td>
+               Laura
+              </td>
+              <td>
+               -0.848362
+              </td>
+              <td>
+               0.531094
+              </td>
+             </tr>
+             <tr>
+              <th>
+               3
+              </th>
+              <td>
+               2000-01-01 00:00:03
+              </td>
+              <td>
+               1002
+              </td>
+              <td>
+               Norbert
+              </td>
+              <td>
+               0.933139
+              </td>
+              <td>
+               -0.164869
+              </td>
+             </tr>
+             <tr>
+              <th>
+               4
+              </th>
+              <td>
+               2000-01-01 00:00:04
+              </td>
+              <td>
+               1007
+              </td>
+              <td>
+               Patricia
+              </td>
+              <td>
+               0.021306
+              </td>
+              <td>
+               -0.748558
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [9]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">import</span> <span class="nn">dask.dataframe</span> <span class="k">as</span> <span class="nn">dd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/2000-*-*.csv'</span><span class="p">)</span>
+<span class="n">df</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[9]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <div>
+           <strong>
+            Dask DataFrame Structure:
+           </strong>
+          </div>
+          <div>
+           <style scoped="">
+            .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+           </style>
+           <table border="1" class="dataframe">
+            <thead>
+             <tr style="text-align: right;">
+              <th>
+              </th>
+              <th>
+               timestamp
+              </th>
+              <th>
+               id
+              </th>
+              <th>
+               name
+              </th>
+              <th>
+               x
+              </th>
+              <th>
+               y
+              </th>
+             </tr>
+             <tr>
+              <th>
+               npartitions=30
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <th>
+              </th>
+              <td>
+               object
+              </td>
+              <td>
+               int64
+              </td>
+              <td>
+               object
+              </td>
+              <td>
+               float64
+              </td>
+              <td>
+               float64
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+               ...
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div>
+           Dask Name: from-delayed, 90 tasks
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [10]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[10]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <div>
+           <style scoped="">
+            .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+           </style>
+           <table border="1" class="dataframe">
+            <thead>
+             <tr style="text-align: right;">
+              <th>
+              </th>
+              <th>
+               timestamp
+              </th>
+              <th>
+               id
+              </th>
+              <th>
+               name
+              </th>
+              <th>
+               x
+              </th>
+              <th>
+               y
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <th>
+               0
+              </th>
+              <td>
+               2000-01-01 00:00:00
+              </td>
+              <td>
+               1007
+              </td>
+              <td>
+               Alice
+              </td>
+              <td>
+               0.132740
+              </td>
+              <td>
+               -0.359150
+              </td>
+             </tr>
+             <tr>
+              <th>
+               1
+              </th>
+              <td>
+               2000-01-01 00:00:01
+              </td>
+              <td>
+               1019
+              </td>
+              <td>
+               Ingrid
+              </td>
+              <td>
+               -0.721167
+              </td>
+              <td>
+               0.215583
+              </td>
+             </tr>
+             <tr>
+              <th>
+               2
+              </th>
+              <td>
+               2000-01-01 00:00:02
+              </td>
+              <td>
+               1031
+              </td>
+              <td>
+               Laura
+              </td>
+              <td>
+               -0.848362
+              </td>
+              <td>
+               0.531094
+              </td>
+             </tr>
+             <tr>
+              <th>
+               3
+              </th>
+              <td>
+               2000-01-01 00:00:03
+              </td>
+              <td>
+               1002
+              </td>
+              <td>
+               Norbert
+              </td>
+              <td>
+               0.933139
+              </td>
+              <td>
+               -0.164869
+              </td>
+             </tr>
+             <tr>
+              <th>
+               4
+              </th>
+              <td>
+               2000-01-01 00:00:04
+              </td>
+              <td>
+               1007
+              </td>
+              <td>
+               Patricia
+              </td>
+              <td>
+               0.021306
+              </td>
+              <td>
+               -0.748558
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Tuning-read_csv">
+         Tuning read_csv
+         <a class="anchor-link" href="#Tuning-read_csv">
+          ¶
+         </a>
+        </h2>
+        <p>
+         The Pandas
+         <code>
+          read_csv
+         </code>
+         function has
+         <em>
+          many
+         </em>
+         options to help you parse files.  The Dask version uses the Pandas function internally, and so supports many of the same options.  You can use the
+         <code>
+          ?
+         </code>
+         operator to see the full documentation string.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [11]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span>pd.read_csv<span class="o">?</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [12]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span>dd.read_csv<span class="o">?</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         In this case we use the
+         <code>
+          parse_dates
+         </code>
+         keyword to parse the timestamp column to be a datetime.  This will make things more efficient in the future.  Notice that the dtype of the timestamp column has changed from
+         <code>
+          object
+         </code>
+         to
+         <code>
+          datetime64[ns]
+         </code>
+         .
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [13]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/2000-*-*.csv'</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s1">'timestamp'</span><span class="p">])</span>
+<span class="n">df</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[13]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <div>
+           <strong>
+            Dask DataFrame Structure:
+           </strong>
+          </div>
+          <div>
+           <style scoped="">
+            .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+           </style>
+           <table border="1" class="dataframe">
+            <thead>
+             <tr style="text-align: right;">
+              <th>
+              </th>
+              <th>
+               timestamp
+              </th>
+              <th>
+               id
+              </th>
+              <th>
+               name
+              </th>
+              <th>
+               x
+              </th>
+              <th>
+               y
+              </th>
+             </tr>
+             <tr>
+              <th>
+               npartitions=30
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <th>
+              </th>
+              <td>
+               datetime64[ns]
+              </td>
+              <td>
+               int64
+              </td>
+              <td>
+               object
+              </td>
+              <td>
+               float64
+              </td>
+              <td>
+               float64
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+               ...
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div>
+           Dask Name: from-delayed, 90 tasks
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Do-a-simple-computation">
+         Do a simple computation
+         <a class="anchor-link" href="#Do-a-simple-computation">
+          ¶
+         </a>
+        </h2>
+        <p>
+         Whenever we operate on our dataframe we read through all of our CSV data so that we don't fill up RAM.  This is very efficient for memory use, but reading through all of the CSV files every time can be slow.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [14]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="o">%</span><span class="k">time</span> df.groupby('name').x.mean().compute()
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>CPU times: user 6.41 s, sys: 672 ms, total: 7.08 s
+Wall time: 5.98 s
+</pre>
+         </div>
+        </div>
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[14]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>name
+Alice       0.002437
+Bob         0.000657
+Charlie     0.000605
+Dan        -0.000003
+Edith      -0.001029
+Frank       0.000309
+George      0.001402
+Hannah      0.000036
+Ingrid     -0.001477
+Jerry       0.000150
+Kevin       0.000595
+Laura       0.001253
+Michael    -0.000660
+Norbert     0.001247
+Oliver     -0.003023
+Patricia   -0.000968
+Quinn       0.002016
+Ray        -0.001267
+Sarah       0.001090
+Tim        -0.001538
+Ursula     -0.000649
+Victor      0.000048
+Wendy      -0.001192
+Xavier      0.001511
+Yvonne     -0.001698
+Zelda      -0.004163
+Name: x, dtype: float64</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Write-to-Parquet">
+         Write to Parquet
+         <a class="anchor-link" href="#Write-to-Parquet">
+          ¶
+         </a>
+        </h2>
+        <p>
+         Instead, we'll store our data in Parquet, a format that is more efficient for computers to read and write.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [15]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="s1">'data/2000-01.parquet'</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'pyarrow'</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [16]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="o">!</span>ls data/2000-01.parquet/
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>_common_metadata  part.16.parquet  part.23.parquet  part.3.parquet
+part.0.parquet	  part.17.parquet  part.24.parquet  part.4.parquet
+part.10.parquet   part.18.parquet  part.25.parquet  part.5.parquet
+part.11.parquet   part.19.parquet  part.26.parquet  part.6.parquet
+part.12.parquet   part.1.parquet   part.27.parquet  part.7.parquet
+part.13.parquet   part.20.parquet  part.28.parquet  part.8.parquet
+part.14.parquet   part.21.parquet  part.29.parquet  part.9.parquet
+part.15.parquet   part.22.parquet  part.2.parquet
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Read-from-Parquet">
+         Read from Parquet
+         <a class="anchor-link" href="#Read-from-Parquet">
+          ¶
+         </a>
+        </h2>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [17]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">'data/2000-01.parquet'</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'pyarrow'</span><span class="p">)</span>
+<span class="n">df</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[17]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <div>
+           <strong>
+            Dask DataFrame Structure:
+           </strong>
+          </div>
+          <div>
+           <style scoped="">
+            .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+           </style>
+           <table border="1" class="dataframe">
+            <thead>
+             <tr style="text-align: right;">
+              <th>
+              </th>
+              <th>
+               timestamp
+              </th>
+              <th>
+               id
+              </th>
+              <th>
+               name
+              </th>
+              <th>
+               x
+              </th>
+              <th>
+               y
+              </th>
+             </tr>
+             <tr>
+              <th>
+               npartitions=30
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+              <th>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <th>
+              </th>
+              <td>
+               datetime64[ns]
+              </td>
+              <td>
+               int64
+              </td>
+              <td>
+               object
+              </td>
+              <td>
+               float64
+              </td>
+              <td>
+               float64
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+               ...
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+             <tr>
+              <th>
+              </th>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+              <td>
+               ...
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div>
+           Dask Name: read-parquet, 30 tasks
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [18]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="o">%</span><span class="k">time</span> df.groupby('name').x.mean().compute()
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>CPU times: user 1.4 s, sys: 232 ms, total: 1.64 s
+Wall time: 1.5 s
+</pre>
+         </div>
+        </div>
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[18]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>name
+Alice       0.002437
+Bob         0.000657
+Charlie     0.000605
+Dan        -0.000003
+Edith      -0.001029
+Frank       0.000309
+George      0.001402
+Hannah      0.000036
+Ingrid     -0.001477
+Jerry       0.000150
+Kevin       0.000595
+Laura       0.001253
+Michael    -0.000660
+Norbert     0.001247
+Oliver     -0.003023
+Patricia   -0.000968
+Quinn       0.002016
+Ray        -0.001267
+Sarah       0.001090
+Tim        -0.001538
+Ursula     -0.000649
+Victor      0.000048
+Wendy      -0.001192
+Xavier      0.001511
+Yvonne     -0.001698
+Zelda      -0.004163
+Name: x, dtype: float64</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Select-only-the-columns-that-you-plan-to-use">
+         Select only the columns that you plan to use
+         <a class="anchor-link" href="#Select-only-the-columns-that-you-plan-to-use">
+          ¶
+         </a>
+        </h2>
+        <p>
+         Parquet is a column-store, which means that it can efficiently pull out only a few columns from your dataset.  This is good because it helps to avoid unnecessary data loading.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [19]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="o">%%</span><span class="k">time</span>
+df = dd.read_parquet('data/2000-01.parquet', columns=['name', 'x'], engine='pyarrow')
+df.groupby('name').x.mean().compute()
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>CPU times: user 1.32 s, sys: 132 ms, total: 1.46 s
+Wall time: 1.32 s
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         Here the difference is not that large, but with larger datasets this can save a great deal of time.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Learn-more">
+         Learn more
+         <a class="anchor-link" href="#Learn-more">
+          ¶
+         </a>
+        </h2>
+        <p>
+         <a href="http://dask.pydata.org/en/latest/dataframe-create.html">
+          http://dask.pydata.org/en/latest/dataframe-create.html
+         </a>
+        </p>
+       </div>
+      </div>
+     </div>
+     <hr class="docutils"/>
+     <p>
+      <a class="reference external" href="https://raw.githubusercontent.com/ceball/dask-examples/master/./dataframes/01_Data_Access.ipynb">
+       Right click to download this notebook from GitHub.
+      </a>
+     </p>
+    </div>
+   </div>
+  </div>
+  <!-- END MAIN BODY OF DOCS ––––––––––––– -->
+  <footer class="footer">
+   <div class="footer-links">
+    <ul>
+     <li>
+      <span class="footer-title">
+       Links
+      </span>
+     </li>
+    </ul>
+    <ul>
+     <li>
+      <span class="footer-title">
+       Join Us
+      </span>
+     </li>
+     <li>
+      <a href="//github.com/dask/dask-examples">
+       Github
+      </a>
+     </li>
+    </ul>
+    <ul class="copyright">
+     <li>
+      2018 dask contributors
+     </li>
+    </ul>
+   </div>
+  </footer>
+  <!-- Google Analytics -->
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61554933-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+  <!-- MathJax Config -->
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+  </script>
+  <!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+ </body>
+</html>

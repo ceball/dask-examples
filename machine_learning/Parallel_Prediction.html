@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8"/>
+  <title>
+   Parallel Prediction — Dask Examples 0.0.1 documentation
+  </title>
+  <meta content="Short description for html meta description." name="description"/>
+  <meta content="dask contributors" name="author"/>
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js">
+  </script>
+  <script>
+   WebFont.load({
+      google: {
+        families: ['Source Sans Pro']
+      }
+    });
+  </script>
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="../_static/css/main.css" rel="stylesheet"/>
+  <link href="../_static/nbsite.css" rel="stylesheet"/>
+  <!-- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+  </script>
+  <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript">
+  </script>
+  <script src="../_static/js/main.js">
+  </script>
+  <script src="../_static/nbsite.js">
+  </script>
+  <script src="../_static/require.js">
+  </script>
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="../_static/images/favicon.ico" rel="icon" type="image/png"/>
+  <!-- Canonical
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="/machine_learning/Parallel_Prediction.html" rel="canonical"/>
+ </head>
+ <body class="">
+  <header class="navigation">
+   <div class="wrapper">
+    <a class="logo" href="../index.html">
+     <img alt="Logo" src="../_static/images/logo.png"/>
+    </a>
+    <a class="navigation-menu logo-text" href="../index.html">
+     Dask Examples
+    </a>
+    <a class="navigation-menu-button" href="javascript:void(0)" id="js-mobile-menu">
+     Menu
+    </a>
+    <nav>
+     <ul class="navigation-menu show" id="js-navigation-menu">
+      <li class="nav-link">
+       <div style="display:inline-block;vertical-align: middle;">
+        <div class="search-bar">
+         <form action="../search.html" method="get" role="search">
+          <input name="q" placeholder="Search" type="search"/>
+          <button type="submit">
+           <img alt="Search Icon" src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon-black.png"/>
+          </button>
+         </form>
+        </div>
+       </div>
+      </li>
+     </ul>
+    </nav>
+   </div>
+  </header>
+  <!-- MAIN BODY OF DOCS –––––––––––––––––– -->
+  <div class="docs section">
+   <div id="hacketyhackhack">
+    <!-- style="width:20%;margin-right: 100px;"> -->
+    <!--style="display: none;"> style="display:none;"> -->
+    <div class="toc" style="width:15%; margin-right:20px;">
+     <ul class="current">
+      <li class="toctree-l1">
+       <a class="reference internal" href="../index.html">
+        Introduction
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../Arrays.html">
+        Arrays
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../dataframes/index.html">
+        Dataframes
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../Futures.html">
+        Futures
+       </a>
+      </li>
+      <li class="toctree-l1 current">
+       <a class="reference internal" href="index.html">
+        Machine Learning
+       </a>
+       <ul class="current">
+        <li class="toctree-l2">
+         <a class="reference internal" href="Distributed_SciKit_Learn_for_CPU-bound_Problems.html">
+          Distributed SciKit Learn for CPU-bound Problems
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Incremental_Learning.html">
+          Incremental Learning
+         </a>
+        </li>
+        <li class="toctree-l2 current">
+         <a class="current reference internal" href="#">
+          Parallel Prediction
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="TPOT.html">
+          TPOT
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Training_on_Large_Datasets.html">
+          Training on Large Datasets
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Voting_Classifier.html">
+          Voting Classifier
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="XGBoost.html">
+          XGBoost
+         </a>
+        </li>
+       </ul>
+      </li>
+     </ul>
+    </div>
+   </div>
+   <div class="content">
+    <!-- style="max-width:80%;margin-left:auto;margin-right: auto;">-->
+    <div class="section" id="parallel-prediction">
+     <h1>
+      Parallel Prediction
+      <a class="headerlink" href="#parallel-prediction" title="Permalink to this headline">
+       ¶
+      </a>
+     </h1>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         Sometimes you'll train on a smaller dataset that fits in memory, but need to predict or score for a much larger (possibly larger than memory) dataset. Perhaps your
+         <a href="http://scikit-learn.org/stable/modules/learning_curve.html">
+          learning curve
+         </a>
+         has leveled off, or you only have labels for a subset of the data.
+        </p>
+        <p>
+         In this situation, you can use
+         <a href="http://dask-ml.readthedocs.io/en/latest/modules/generated/dask_ml.wrappers.ParallelPostFit.html">
+          <code>
+           ParallelPostFit
+          </code>
+         </a>
+         to parallelize and distribute the scoring or prediction steps.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [1]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="k">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">progress</span>
+
+<span class="c1"># Scale up: connect to your own cluster with bmore resources</span>
+<span class="c1"># see http://dask.pydata.org/en/latest/setup.html</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">memory_limit</span><span class="o">=</span><span class="s1">'2GB'</span><span class="p">)</span>
+<span class="n">client</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[1]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <table style="border: 2px solid white;">
+           <tbody>
+            <tr>
+             <td style="vertical-align: top; border: 0px solid white">
+              <h3>
+               Client
+              </h3>
+              <ul>
+               <li>
+                <b>
+                 Scheduler:
+                </b>
+                inproc://172.17.0.19/5146/1
+               </li>
+               <li>
+                <b>
+                 Dashboard:
+                </b>
+                <a href="http://localhost:8787/status" target="_blank">
+                 http://localhost:8787/status
+                </a>
+               </li>
+              </ul>
+             </td>
+             <td style="vertical-align: top; border: 0px solid white">
+              <h3>
+               Cluster
+              </h3>
+              <ul>
+               <li>
+                <b>
+                 Workers:
+                </b>
+                1
+               </li>
+               <li>
+                <b>
+                 Cores:
+                </b>
+                4
+               </li>
+               <li>
+                <b>
+                 Memory:
+                </b>
+                2.00 GB
+               </li>
+              </ul>
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [2]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="k">import</span> <span class="n">make_classification</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         We'll generate a small random dataset with scikit-learn.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [3]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span>
+    <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[3]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>array([[ 1.53682958, -1.39869399],
+       [ 1.36917601, -0.63734411],
+       [ 0.50231787, -0.45910529],
+       [ 1.83319262, -1.29808229],
+       [ 1.04235568,  1.12152929]])</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         And we'll clone that dataset many times with
+         <code>
+          dask.array
+         </code>
+         .
+         <code>
+          X_large
+         </code>
+         and
+         <code>
+          y_large
+         </code>
+         represent our larger than memory dataset.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [4]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="c1"># Scale up: increase N, the number of times we replicate the data.</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">X_large</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">da</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                          <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)])</span>
+<span class="n">y_large</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">da</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                          <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)])</span>
+<span class="n">X_large</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[4]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>dask.array&lt;concatenate, shape=(100000, 2), dtype=float64, chunksize=(1000, 2)&gt;</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         Since our training dataset fits in memory, we can use a scikit-learn estimator as the actual estimator fit during traning.
+But we know that we'll want to predict for a large dataset, so we'll wrap the scikit-learn estimator with
+         <code>
+          ParallelPostFit
+         </code>
+         .
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [5]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegressionCV</span>
+<span class="kn">from</span> <span class="nn">dask_ml.wrappers</span> <span class="k">import</span> <span class="n">ParallelPostFit</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [6]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">clf</span> <span class="o">=</span> <span class="n">ParallelPostFit</span><span class="p">(</span><span class="n">LogisticRegressionCV</span><span class="p">(</span><span class="n">cv</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         Now we'll call
+         <code>
+          clf.fit
+         </code>
+         . Dask-ML does nothing here, so this step can only use datasets that fit in memory.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [7]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stderr output_text">
+          <pre>INFO:dask_ml.wrappers:Starting fit
+INFO:dask_ml.wrappers:Starting fit
+INFO:dask_ml.wrappers:Finished fit in 0:00:00.056997
+</pre>
+         </div>
+        </div>
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[7]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>ParallelPostFit(estimator=LogisticRegressionCV(Cs=10, class_weight=None, cv=3, dual=False,
+           fit_intercept=True, intercept_scaling=1.0, max_iter=100,
+           multi_class='ovr', n_jobs=1, penalty='l2', random_state=None,
+           refit=True, scoring=None, solver='lbfgs', tol=0.0001, verbose=0),
+        scoring=None)</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         Now that training is done, we'll turn to predicting for the full (larger than memory) dataset.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [8]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_large</span><span class="p">)</span>
+<span class="n">y_pred</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[8]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>dask.array&lt;predict, shape=(100000,), dtype=int64, chunksize=(1000,)&gt;</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         y_pred is Dask arary. Workers can write the predicted values to a shared file system, without ever having to collect the data on a single machine.
+        </p>
+        <p>
+         Or we can check the models score on the entire large dataset. The computation will be done in parallel, and no single machine will have to hold all the data.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [9]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_large</span><span class="p">,</span> <span class="n">y_large</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[9]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>0.899</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <hr class="docutils"/>
+     <p>
+      <a class="reference external" href="https://raw.githubusercontent.com/ceball/dask-examples/master/./machine_learning/Parallel_Prediction.ipynb">
+       Right click to download this notebook from GitHub.
+      </a>
+     </p>
+    </div>
+   </div>
+  </div>
+  <!-- END MAIN BODY OF DOCS ––––––––––––– -->
+  <footer class="footer">
+   <div class="footer-links">
+    <ul>
+     <li>
+      <span class="footer-title">
+       Links
+      </span>
+     </li>
+    </ul>
+    <ul>
+     <li>
+      <span class="footer-title">
+       Join Us
+      </span>
+     </li>
+     <li>
+      <a href="//github.com/dask/dask-examples">
+       Github
+      </a>
+     </li>
+    </ul>
+    <ul class="copyright">
+     <li>
+      2018 dask contributors
+     </li>
+    </ul>
+   </div>
+  </footer>
+  <!-- Google Analytics -->
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61554933-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+  <!-- MathJax Config -->
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+  </script>
+  <!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+ </body>
+</html>

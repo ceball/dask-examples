@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8"/>
+  <title>
+   Incremental Learning — Dask Examples 0.0.1 documentation
+  </title>
+  <meta content="Short description for html meta description." name="description"/>
+  <meta content="dask contributors" name="author"/>
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js">
+  </script>
+  <script>
+   WebFont.load({
+      google: {
+        families: ['Source Sans Pro']
+      }
+    });
+  </script>
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="../_static/css/main.css" rel="stylesheet"/>
+  <link href="../_static/nbsite.css" rel="stylesheet"/>
+  <!-- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+  </script>
+  <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript">
+  </script>
+  <script src="../_static/js/main.js">
+  </script>
+  <script src="../_static/nbsite.js">
+  </script>
+  <script src="../_static/require.js">
+  </script>
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="../_static/images/favicon.ico" rel="icon" type="image/png"/>
+  <!-- Canonical
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="/machine_learning/Incremental_Learning.html" rel="canonical"/>
+ </head>
+ <body class="">
+  <header class="navigation">
+   <div class="wrapper">
+    <a class="logo" href="../index.html">
+     <img alt="Logo" src="../_static/images/logo.png"/>
+    </a>
+    <a class="navigation-menu logo-text" href="../index.html">
+     Dask Examples
+    </a>
+    <a class="navigation-menu-button" href="javascript:void(0)" id="js-mobile-menu">
+     Menu
+    </a>
+    <nav>
+     <ul class="navigation-menu show" id="js-navigation-menu">
+      <li class="nav-link">
+       <div style="display:inline-block;vertical-align: middle;">
+        <div class="search-bar">
+         <form action="../search.html" method="get" role="search">
+          <input name="q" placeholder="Search" type="search"/>
+          <button type="submit">
+           <img alt="Search Icon" src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon-black.png"/>
+          </button>
+         </form>
+        </div>
+       </div>
+      </li>
+     </ul>
+    </nav>
+   </div>
+  </header>
+  <!-- MAIN BODY OF DOCS –––––––––––––––––– -->
+  <div class="docs section">
+   <div id="hacketyhackhack">
+    <!-- style="width:20%;margin-right: 100px;"> -->
+    <!--style="display: none;"> style="display:none;"> -->
+    <div class="toc" style="width:15%; margin-right:20px;">
+     <ul class="current">
+      <li class="toctree-l1">
+       <a class="reference internal" href="../index.html">
+        Introduction
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../Arrays.html">
+        Arrays
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../dataframes/index.html">
+        Dataframes
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../Futures.html">
+        Futures
+       </a>
+      </li>
+      <li class="toctree-l1 current">
+       <a class="reference internal" href="index.html">
+        Machine Learning
+       </a>
+       <ul class="current">
+        <li class="toctree-l2">
+         <a class="reference internal" href="Distributed_SciKit_Learn_for_CPU-bound_Problems.html">
+          Distributed SciKit Learn for CPU-bound Problems
+         </a>
+        </li>
+        <li class="toctree-l2 current">
+         <a class="current reference internal" href="#">
+          Incremental Learning
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Parallel_Prediction.html">
+          Parallel Prediction
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="TPOT.html">
+          TPOT
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Training_on_Large_Datasets.html">
+          Training on Large Datasets
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Voting_Classifier.html">
+          Voting Classifier
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="XGBoost.html">
+          XGBoost
+         </a>
+        </li>
+       </ul>
+      </li>
+     </ul>
+    </div>
+   </div>
+   <div class="content">
+    <!-- style="max-width:80%;margin-left:auto;margin-right: auto;">-->
+    <div class="section" id="incremental-learning">
+     <h1>
+      Incremental Learning
+      <a class="headerlink" href="#incremental-learning" title="Permalink to this headline">
+       ¶
+      </a>
+     </h1>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         We can train models on large datasets one batch at a time.  Many Scikit-Learn estimators implement a
+         <code>
+          partial_fit
+         </code>
+         method to enable incremental learning in batches.
+        </p>
+        <div class="highlight">
+         <pre><span></span><span class="n">est</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">est</span><span class="o">.</span><span class="n">partial_fit</span><span class="p">(</span><span class="n">X_train_1</span><span class="p">,</span> <span class="n">y_train_1</span><span class="p">)</span>
+<span class="n">est</span><span class="o">.</span><span class="n">partial_fit</span><span class="p">(</span><span class="n">X_train_2</span><span class="p">,</span> <span class="n">y_train_2</span><span class="p">)</span>
+<span class="o">...</span>
+</pre>
+        </div>
+        <p>
+         The Scikit-Learn documentation discusses this approach in more depth in their
+         <a href="http://scikit-learn.org/stable/modules/scaling_strategies.html">
+          user guide
+         </a>
+         .
+        </p>
+        <p>
+         This notebook demonstrates the use of Dask-ML's
+         <code>
+          Incremental
+         </code>
+         meta-estimator, which automates the use of Scikit-Learn's
+         <code>
+          partial_fit
+         </code>
+         over Dask arrays and dataframes. Scikit-Learn handles all of the computation while Dask handles the data management, loading and moving batches of data as necessary. This allows scaling to large datasets distributed across many machines, or to datasets that do not fit in memory, all with a familiar workflow.
+        </p>
+        <p>
+         This example shows ...
+        </p>
+        <ul>
+         <li>
+          wrapping a Scikit-Learn estimator that implements
+          <code>
+           partial_fit
+          </code>
+          with the
+          <a href="https://dask-ml.readthedocs.io/en/latest/modules/generated/dask_ml.wrappers.Incremental.html#dask_ml.wrappers.Incremental">
+           Dask-ML Incremental
+          </a>
+          meta-estimator
+         </li>
+         <li>
+          training, predicting, and scoring on this wrapped estimator
+         </li>
+        </ul>
+        <p>
+         Although this example uses Scikit-Learn's SGDClassifer, the
+         <code>
+          Incremental
+         </code>
+         meta-estimator will work for any class that implements
+         <code>
+          partial_fit
+         </code>
+         and the
+         <a href="http://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html">
+          scikit-learn base estimator API
+         </a>
+         .
+        </p>
+        <p>
+         <img src="http://scikit-learn.org/stable/_static/scikit-learn-logo-small.png"/>
+         <img src="https://www.continuum.io/sites/default/files/dask_stacked.png" width="100px"/>
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Setup-Dask">
+         Setup Dask
+         <a class="anchor-link" href="#Setup-Dask">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We first start a Dask client in order to get access to the Dask dashboard, which will provide progress and performance metrics.
+        </p>
+        <p>
+         You can view the dashboard by clicking on the dashboard link after you run the cell
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [1]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">client</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[1]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <table style="border: 2px solid white;">
+           <tbody>
+            <tr>
+             <td style="vertical-align: top; border: 0px solid white">
+              <h3>
+               Client
+              </h3>
+              <ul>
+               <li>
+                <b>
+                 Scheduler:
+                </b>
+                tcp://127.0.0.1:37912
+               </li>
+               <li>
+                <b>
+                 Dashboard:
+                </b>
+                <a href="http://127.0.0.1:8787/status" target="_blank">
+                 http://127.0.0.1:8787/status
+                </a>
+               </li>
+              </ul>
+             </td>
+             <td style="vertical-align: top; border: 0px solid white">
+              <h3>
+               Cluster
+              </h3>
+              <ul>
+               <li>
+                <b>
+                 Workers:
+                </b>
+                4
+               </li>
+               <li>
+                <b>
+                 Cores:
+                </b>
+                4
+               </li>
+               <li>
+                <b>
+                 Memory:
+                </b>
+                5.61 GB
+               </li>
+              </ul>
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Create-Data">
+         Create Data
+         <a class="anchor-link" href="#Create-Data">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We create a synthetic dataset that is large enough to be interesting, but small enough to run quickly.
+        </p>
+        <p>
+         Our dataset has 1,000,000 examples and 100 features.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [2]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">import</span> <span class="nn">dask</span>
+<span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
+<span class="kn">from</span> <span class="nn">dask_ml.datasets</span> <span class="k">import</span> <span class="n">make_classification</span>
+
+
+<span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">,</span> <span class="mi">100</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="n">d</span><span class="p">,</span>
+                           <span class="n">chunks</span><span class="o">=</span><span class="n">n</span> <span class="o">//</span> <span class="mi">10</span><span class="p">,</span> <span class="n">flip_y</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">X</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[2]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>dask.array&lt;normal, shape=(100000, 100), dtype=float64, chunksize=(10000, 100)&gt;</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         For more information on creating dask arrays and dataframes from real data, see documentation on
+         <a href="https://dask.pydata.org/en/latest/array-creation.html">
+          Dask arrays
+         </a>
+         and
+         <a href="https://dask.pydata.org/en/latest/dataframe-create.html">
+          Dask dataframes
+         </a>
+         .
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Split-data-for-training-and-testing">
+         Split data for training and testing
+         <a class="anchor-link" href="#Split-data-for-training-and-testing">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We split our dataset into training and testing data to aid evaluation by making sure we have a fair test:
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [3]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">dask_ml.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">X_train</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[3]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>dask.array&lt;concatenate, shape=(90000, 100), dtype=float64, chunksize=(9000, 100)&gt;</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Persist-data-in-memory">
+         Persist data in memory
+         <a class="anchor-link" href="#Persist-data-in-memory">
+          ¶
+         </a>
+        </h2>
+        <p>
+         This dataset is small enough to fit in distributed memory, so we call
+         <code>
+          dask.persist
+         </code>
+         to ask Dask to execute the computations above and keep the results in memory.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [4]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         If you are working in a situation where your dataset does not fit in memory then you should skip this step.  Everything will still work, but will be slower and use less memory.
+        </p>
+        <p>
+         Calling
+         <code>
+          dask.persist
+         </code>
+         will preserve our data in memory, so no computation will be needed as we pass over our data many times.  For example if our data came from CSV files and was not persisted, then the CSV files would have to be re-read on each pass.  This is desirable if the data does not fit in RAM, but not slows down our computation otherwise.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Precompute-classes">
+         Precompute classes
+         <a class="anchor-link" href="#Precompute-classes">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We pre-compute the classes from our training data, which is required for this classification example:
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [5]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">classes</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+<span class="n">classes</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[5]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>array([0, 1])</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Create-Scikit-Learn-model">
+         Create Scikit-Learn model
+         <a class="anchor-link" href="#Create-Scikit-Learn-model">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We make the underlying Scikit-Learn estimator, an
+         <code>
+          SGDClassifier
+         </code>
+         :
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [6]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">SGDClassifier</span>
+
+<span class="n">est</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">'log'</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">'l2'</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         Here we use
+         <code>
+          SGDClassifier
+         </code>
+         , but any estimator that implements the
+         <code>
+          partial_fit
+         </code>
+         method will work.  A list of Scikit-Learn models that implement this API is available
+         <a href="http://scikit-learn.org/stable/modules/scaling_strategies.html#incremental-learning">
+          here
+         </a>
+         .
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Wrap-with-Dask-ML's-Incremental-meta-estimator">
+         Wrap with Dask-ML's Incremental meta-estimator
+         <a class="anchor-link" href="#Wrap-with-Dask-ML's-Incremental-meta-estimator">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We now wrap our
+         <code>
+          SGDClassifer
+         </code>
+         with the
+         <a href="https://dask-ml.readthedocs.io/en/latest/modules/generated/dask_ml.wrappers.Incremental.html#dask_ml.wrappers.Incremental">
+          <code>
+           dask_ml.wrappers.Incremental
+          </code>
+         </a>
+         meta-estimator.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [7]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">dask_ml.wrappers</span> <span class="k">import</span> <span class="n">Incremental</span>
+
+<span class="n">inc</span> <span class="o">=</span> <span class="n">Incremental</span><span class="p">(</span><span class="n">est</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">'accuracy'</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         Recall that
+         <code>
+          Incremental
+         </code>
+         only does data management while leaving the actual algorithm to the underlying Scikit-Learn estimator.
+        </p>
+        <p>
+         Note: We set the scoring parameter above in the Dask estimator to tell it to handle scoring.  This works better when using Dask arrays for test data.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Model-training">
+         Model training
+         <a class="anchor-link" href="#Model-training">
+          ¶
+         </a>
+        </h2>
+        <p>
+         <code>
+          Incremental
+         </code>
+         implements a
+         <code>
+          fit
+         </code>
+         method, which will perform one loop over the dataset, calling
+         <code>
+          partial_fit
+         </code>
+         over each chunk in the Dask array.
+        </p>
+        <p>
+         You may want to watch the dashboard during this fit process to see the sequential fitting of many batches.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [8]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">inc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[8]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>Incremental(estimator=SGDClassifier(alpha=0.0001, average=False, class_weight=None, epsilon=0.1,
+       eta0=0.0, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', max_iter=None, n_iter=None,
+       n_jobs=1, penalty='l2', power_t=0.5, random_state=None,
+       shuffle=True, tol=0.001, verbose=0, warm_start=False),
+      random_state=None, scoring='accuracy', shuffle_blocks=True)</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [9]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">inc</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[9]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>0.6142</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Pass-over-the-training-data-many-times">
+         Pass over the training data many times
+         <a class="anchor-link" href="#Pass-over-the-training-data-many-times">
+          ¶
+         </a>
+        </h2>
+        <p>
+         Calling
+         <code>
+          .fit
+         </code>
+         passes over all chunks our data once.  However, in many cases we may want to pass over the training data many times.  To do this we can use the
+         <code>
+          Incremental.partial_fit
+         </code>
+         method and a for loop.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [10]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">est</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">'log'</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">'l2'</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0e-3</span><span class="p">)</span>
+<span class="n">inc</span> <span class="o">=</span> <span class="n">Incremental</span><span class="p">(</span><span class="n">est</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">'accuracy'</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [11]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">inc</span><span class="o">.</span><span class="n">partial_fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Score:'</span><span class="p">,</span> <span class="n">inc</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>    
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>Score: 0.6139
+Score: 0.6349
+Score: 0.6389
+Score: 0.6313
+Score: 0.6563
+Score: 0.6607
+Score: 0.6564
+Score: 0.6622
+Score: 0.6617
+Score: 0.6639
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Predict-and-Score">
+         Predict and Score
+         <a class="anchor-link" href="#Predict-and-Score">
+          ¶
+         </a>
+        </h2>
+        <p>
+         Finally we can also call
+         <code>
+          Incremental.predict
+         </code>
+         and
+         <code>
+          Incremental.score
+         </code>
+         on our testing data
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [12]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">inc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>  <span class="c1"># Predict produces lazy dask arrays</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[12]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>dask.array&lt;predict, shape=(10000,), dtype=int64, chunksize=(1000,)&gt;</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [13]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">inc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:</span><span class="mi">100</span><span class="p">]</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>  <span class="c1"># call compute to get results</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[13]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>array([1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0,
+       1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1,
+       0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+       1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0,
+       1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1])</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [14]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">inc</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[14]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>0.6639</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Learn-more">
+         Learn more
+         <a class="anchor-link" href="#Learn-more">
+          ¶
+         </a>
+        </h2>
+        <p>
+         In this notebook we went over using Dask-ML's
+         <code>
+          Incremental
+         </code>
+         meta-estimator to automate the process of incremental training with Scikit-Learn estimators that implement the
+         <code>
+          partial_fit
+         </code>
+         method.  If you want to learn more about this process you might want to investigate the following documentation:
+        </p>
+        <ol>
+         <li>
+          <a href="http://scikit-learn.org/stable/modules/scaling_strategies.html">
+           http://scikit-learn.org/stable/modules/scaling_strategies.html
+          </a>
+         </li>
+         <li>
+          <a href="https://dask-ml.readthedocs.io/en/latest/modules/generated/dask_ml.wrappers.Incremental.html#dask_ml.wrappers.Incremental">
+           Dask-ML Incremental API documentation
+          </a>
+         </li>
+         <li>
+          <a href="http://scikit-learn.org/stable/modules/scaling_strategies.html#incremental-learning">
+           List of Scikit-Learn estimators compatible with Dask-ML's Incremental
+          </a>
+         </li>
+         <li>
+          For more info on the train-test split for model evaluation, see
+          <a href="https://jakevdp.github.io/PythonDataScienceHandbook/05.03-hyperparameters-and-model-validation.html">
+           Hyperparameters and Model Validation
+          </a>
+          .
+         </li>
+        </ol>
+       </div>
+      </div>
+     </div>
+     <hr class="docutils"/>
+     <p>
+      <a class="reference external" href="https://raw.githubusercontent.com/ceball/dask-examples/master/./machine_learning/Incremental_Learning.ipynb">
+       Right click to download this notebook from GitHub.
+      </a>
+     </p>
+    </div>
+   </div>
+  </div>
+  <!-- END MAIN BODY OF DOCS ––––––––––––– -->
+  <footer class="footer">
+   <div class="footer-links">
+    <ul>
+     <li>
+      <span class="footer-title">
+       Links
+      </span>
+     </li>
+    </ul>
+    <ul>
+     <li>
+      <span class="footer-title">
+       Join Us
+      </span>
+     </li>
+     <li>
+      <a href="//github.com/dask/dask-examples">
+       Github
+      </a>
+     </li>
+    </ul>
+    <ul class="copyright">
+     <li>
+      2018 dask contributors
+     </li>
+    </ul>
+   </div>
+  </footer>
+  <!-- Google Analytics -->
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61554933-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+  <!-- MathJax Config -->
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+  </script>
+  <!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+ </body>
+</html>

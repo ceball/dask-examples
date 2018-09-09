@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8"/>
+  <title>
+   TPOT — Dask Examples 0.0.1 documentation
+  </title>
+  <meta content="Short description for html meta description." name="description"/>
+  <meta content="dask contributors" name="author"/>
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js">
+  </script>
+  <script>
+   WebFont.load({
+      google: {
+        families: ['Source Sans Pro']
+      }
+    });
+  </script>
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="../_static/css/main.css" rel="stylesheet"/>
+  <link href="../_static/nbsite.css" rel="stylesheet"/>
+  <!-- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+  </script>
+  <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript">
+  </script>
+  <script src="../_static/js/main.js">
+  </script>
+  <script src="../_static/nbsite.js">
+  </script>
+  <script src="../_static/require.js">
+  </script>
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="../_static/images/favicon.ico" rel="icon" type="image/png"/>
+  <!-- Canonical
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="/machine_learning/TPOT.html" rel="canonical"/>
+ </head>
+ <body class="">
+  <header class="navigation">
+   <div class="wrapper">
+    <a class="logo" href="../index.html">
+     <img alt="Logo" src="../_static/images/logo.png"/>
+    </a>
+    <a class="navigation-menu logo-text" href="../index.html">
+     Dask Examples
+    </a>
+    <a class="navigation-menu-button" href="javascript:void(0)" id="js-mobile-menu">
+     Menu
+    </a>
+    <nav>
+     <ul class="navigation-menu show" id="js-navigation-menu">
+      <li class="nav-link">
+       <div style="display:inline-block;vertical-align: middle;">
+        <div class="search-bar">
+         <form action="../search.html" method="get" role="search">
+          <input name="q" placeholder="Search" type="search"/>
+          <button type="submit">
+           <img alt="Search Icon" src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon-black.png"/>
+          </button>
+         </form>
+        </div>
+       </div>
+      </li>
+     </ul>
+    </nav>
+   </div>
+  </header>
+  <!-- MAIN BODY OF DOCS –––––––––––––––––– -->
+  <div class="docs section">
+   <div id="hacketyhackhack">
+    <!-- style="width:20%;margin-right: 100px;"> -->
+    <!--style="display: none;"> style="display:none;"> -->
+    <div class="toc" style="width:15%; margin-right:20px;">
+     <ul class="current">
+      <li class="toctree-l1">
+       <a class="reference internal" href="../index.html">
+        Introduction
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../Arrays.html">
+        Arrays
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../dataframes/index.html">
+        Dataframes
+       </a>
+      </li>
+      <li class="toctree-l1">
+       <a class="reference internal" href="../Futures.html">
+        Futures
+       </a>
+      </li>
+      <li class="toctree-l1 current">
+       <a class="reference internal" href="index.html">
+        Machine Learning
+       </a>
+       <ul class="current">
+        <li class="toctree-l2">
+         <a class="reference internal" href="Distributed_SciKit_Learn_for_CPU-bound_Problems.html">
+          Distributed SciKit Learn for CPU-bound Problems
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Incremental_Learning.html">
+          Incremental Learning
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Parallel_Prediction.html">
+          Parallel Prediction
+         </a>
+        </li>
+        <li class="toctree-l2 current">
+         <a class="current reference internal" href="#">
+          TPOT
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Training_on_Large_Datasets.html">
+          Training on Large Datasets
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="Voting_Classifier.html">
+          Voting Classifier
+         </a>
+        </li>
+        <li class="toctree-l2">
+         <a class="reference internal" href="XGBoost.html">
+          XGBoost
+         </a>
+        </li>
+       </ul>
+      </li>
+     </ul>
+    </div>
+   </div>
+   <div class="content">
+    <!-- style="max-width:80%;margin-left:auto;margin-right: auto;">-->
+    <div class="section" id="tpot">
+     <h1>
+      TPOT
+      <a class="headerlink" href="#tpot" title="Permalink to this headline">
+       ¶
+      </a>
+     </h1>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         This example shows how
+         <a href="https://epistasislab.github.io/tpot/">
+          TPOT
+         </a>
+         can be used with Dask for distributed automated machine learning.
+        </p>
+        <p>
+         TPOT is an
+         <a href="https://en.wikipedia.org/wiki/Automated_machine_learning">
+          automated machine learning
+         </a>
+         library.
+It evaluates many scikit-learn pipelines and hyperparameter combinations to find a model that works well for your data. Evaluating all these computations is computationally expensive, but ammenable to parallelism. TPOT can use Dask to distribute these computations on a cluster of machines.
+        </p>
+        <p>
+         This notebook can be run interactively on the
+         <a href="https://github.com/dask/dask-examples">
+          dask examples binder
+         </a>
+         .
+The following video shows a larger version of this notebook on a cluster.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [1]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">HTML</span>
+
+<span class="n">HTML</span><span class="p">(</span><span class="s1">'&lt;div style="position:relative;height:0;padding-bottom:56.25%"&gt;&lt;iframe src="https://www.youtube.com/embed/uyx9nBuOYQQ?ecver=2" width="640" height="360" frameborder="0" allow="autoplay; encrypted-media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;'</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[1]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <div style="position:relative;height:0;padding-bottom:56.25%">
+           <iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" height="360" src="https://www.youtube.com/embed/uyx9nBuOYQQ?ecver=2" style="position:absolute;width:100%;height:100%;left:0" width="640">
+           </iframe>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [2]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="c1"># Currently requires TPOT dev</span>
+<span class="o">!</span>pip install git+https://github.com/EpistasisLab/tpot@development
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stdout output_text">
+          <pre>Collecting git+https://github.com/EpistasisLab/tpot@development
+  Cloning https://github.com/EpistasisLab/tpot (to revision development) to /tmp/pip-req-build-arx_ttjs
+Requirement already satisfied: numpy&gt;=1.12.1 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from TPOT==0.9.4) (1.15.0)
+Requirement already satisfied: scipy&gt;=0.19.0 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from TPOT==0.9.4) (1.1.0)
+Requirement already satisfied: scikit-learn&gt;=0.18.1 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from TPOT==0.9.4) (0.19.1)
+Collecting deap&gt;=1.0 (from TPOT==0.9.4)
+  Downloading https://files.pythonhosted.org/packages/af/29/e7f2ecbe02997b16a768baed076f5fc4781d7057cd5d9adf7c94027845ba/deap-1.2.2.tar.gz (936kB)
+    100% |████████████████████████████████| 942kB 23.8MB/s 
+Collecting update_checker&gt;=0.16 (from TPOT==0.9.4)
+  Downloading https://files.pythonhosted.org/packages/17/c9/ab11855af164d03be0ff4fddd4c46a5bd44799a9ecc1770e01a669c21168/update_checker-0.16-py2.py3-none-any.whl
+Collecting tqdm&gt;=4.11.2 (from TPOT==0.9.4)
+  Downloading https://files.pythonhosted.org/packages/c7/e0/52b2faaef4fd87f86eb8a8f1afa2cd6eb11146822033e29c04ac48ada32c/tqdm-4.25.0-py2.py3-none-any.whl (43kB)
+    100% |████████████████████████████████| 51kB 21.9MB/s 
+Collecting stopit&gt;=1.1.1 (from TPOT==0.9.4)
+  Downloading https://files.pythonhosted.org/packages/35/58/e8bb0b0fb05baf07bbac1450c447d753da65f9701f551dca79823ce15d50/stopit-1.1.2.tar.gz
+Requirement already satisfied: pandas&gt;=0.20.2 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from TPOT==0.9.4) (0.23.4)
+Requirement already satisfied: requests&gt;=2.3.0 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from update_checker&gt;=0.16-&gt;TPOT==0.9.4) (2.19.1)
+Requirement already satisfied: python-dateutil&gt;=2.5.0 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from pandas&gt;=0.20.2-&gt;TPOT==0.9.4) (2.7.3)
+Requirement already satisfied: pytz&gt;=2011k in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from pandas&gt;=0.20.2-&gt;TPOT==0.9.4) (2018.5)
+Requirement already satisfied: chardet&lt;3.1.0,&gt;=3.0.2 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from requests&gt;=2.3.0-&gt;update_checker&gt;=0.16-&gt;TPOT==0.9.4) (3.0.4)
+Requirement already satisfied: urllib3&lt;1.24,&gt;=1.21.1 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from requests&gt;=2.3.0-&gt;update_checker&gt;=0.16-&gt;TPOT==0.9.4) (1.23)
+Requirement already satisfied: idna&lt;2.8,&gt;=2.5 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from requests&gt;=2.3.0-&gt;update_checker&gt;=0.16-&gt;TPOT==0.9.4) (2.7)
+Requirement already satisfied: certifi&gt;=2017.4.17 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from requests&gt;=2.3.0-&gt;update_checker&gt;=0.16-&gt;TPOT==0.9.4) (2018.8.24)
+Requirement already satisfied: six&gt;=1.5 in /home/travis/miniconda/envs/test/lib/python3.6/site-packages (from python-dateutil&gt;=2.5.0-&gt;pandas&gt;=0.20.2-&gt;TPOT==0.9.4) (1.11.0)
+Building wheels for collected packages: TPOT, deap, stopit
+  Running setup.py bdist_wheel for TPOT ... - done
+  Stored in directory: /tmp/pip-ephem-wheel-cache-11rzqxzl/wheels/36/7d/ff/9064c383dafa37df13f7177a086505f65c8ef3eaee66686bb7
+  Running setup.py bdist_wheel for deap ... - \ | / - \ | done
+  Stored in directory: /home/travis/.cache/pip/wheels/22/ea/bf/dc7c8a2262025a0ab5da9ef02282c198be88902791ca0c6658
+  Running setup.py bdist_wheel for stopit ... - done
+  Stored in directory: /home/travis/.cache/pip/wheels/3c/85/2b/2580190404636bfc63e8de3dff629c03bb795021e1983a6cc7
+Successfully built TPOT deap stopit
+<span class="ansi-red-fg">twisted 18.7.0 requires PyHamcrest&gt;=1.9.0, which is not installed.</span>
+Installing collected packages: deap, update-checker, tqdm, stopit, TPOT
+Successfully installed TPOT-0.9.4 deap-1.2.2 stopit-1.1.2 tqdm-4.25.0 update-checker-0.16
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [3]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">tpot</span> <span class="k">import</span> <span class="n">TPOTClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="k">import</span> <span class="n">load_digits</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Setup-Dask">
+         Setup Dask
+         <a class="anchor-link" href="#Setup-Dask">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We first start a Dask client in order to get access to the Dask dashboard, which will provide progress and performance metrics.
+        </p>
+        <p>
+         You can view the dashboard by clicking on the dashboard link after you run the cell.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [4]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">client</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[4]:
+         </div>
+         <div class="output_html rendered_html output_subarea output_execute_result">
+          <table style="border: 2px solid white;">
+           <tbody>
+            <tr>
+             <td style="vertical-align: top; border: 0px solid white">
+              <h3>
+               Client
+              </h3>
+              <ul>
+               <li>
+                <b>
+                 Scheduler:
+                </b>
+                tcp://127.0.0.1:35970
+               </li>
+               <li>
+                <b>
+                 Dashboard:
+                </b>
+                <a href="http://127.0.0.1:8787/status" target="_blank">
+                 http://127.0.0.1:8787/status
+                </a>
+               </li>
+              </ul>
+             </td>
+             <td style="vertical-align: top; border: 0px solid white">
+              <h3>
+               Cluster
+              </h3>
+              <ul>
+               <li>
+                <b>
+                 Workers:
+                </b>
+                4
+               </li>
+               <li>
+                <b>
+                 Cores:
+                </b>
+                4
+               </li>
+               <li>
+                <b>
+                 Memory:
+                </b>
+                5.61 GB
+               </li>
+              </ul>
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Create-Data">
+         Create Data
+         <a class="anchor-link" href="#Create-Data">
+          ¶
+         </a>
+        </h2>
+        <p>
+         We'll use the digits dataset.
+To ensure the example runs quickly, we'll make the training dataset relatively small.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [5]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">digits</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">()</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">digits</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
+    <span class="n">train_size</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">test_size</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+<span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <p>
+         These are just small, in-memory NumPy arrays. This example is not applicable to larger-than-memory Dask arrays.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Using-Dask">
+         Using Dask
+         <a class="anchor-link" href="#Using-Dask">
+          ¶
+         </a>
+        </h2>
+        <p>
+         TPOT follows the scikit-learn API; we specify a
+         <code>
+          TPOTClassifier
+         </code>
+         with a few hyperparameters, and then fit it on some data.
+By default, TPOT trains on your single machine.
+To ensure your cluster is used, specify the
+         <code>
+          use_dask
+         </code>
+         keyword.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [6]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="c1"># scale up: Increase the TPOT parameters like population_size, generations</span>
+<span class="n">tp</span> <span class="o">=</span> <span class="n">TPOTClassifier</span><span class="p">(</span>
+    <span class="n">generations</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">population_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">cv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">use_dask</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing code_cell rendered">
+      <div class="input">
+       <div class="prompt input_prompt">
+        In [7]:
+       </div>
+       <div class="inner_cell">
+        <div class="input_area">
+         <div class=" highlight hl-ipython3">
+          <pre><span></span><span class="n">tp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="output_wrapper">
+       <div class="output">
+        <div class="output_area">
+         <div class="prompt">
+         </div>
+         <div class="output_subarea output_stream output_stderr output_text">
+          <pre>/home/travis/miniconda/envs/test/lib/python3.6/site-packages/sklearn/ensemble/weight_boosting.py:29: DeprecationWarning: numpy.core.umath_tests is an internal NumPy module and should not be imported. It will be removed in a future NumPy release.
+  from numpy.core.umath_tests import inner1d
+</pre>
+         </div>
+        </div>
+        <div class="output_area">
+         <div class="prompt output_prompt">
+          Out[7]:
+         </div>
+         <div class="output_text output_subarea output_execute_result">
+          <pre>TPOTClassifier(config_dict=None, crossover_rate=0.1, cv=2,
+        disable_update_check=False, early_stop=None, generations=2,
+        max_eval_time_mins=5, max_time_mins=None, memory=None,
+        mutation_rate=0.9, n_jobs=-1, offspring_size=None,
+        periodic_checkpoint_folder=None, population_size=10,
+        random_state=0, scoring=None, subsample=1.0, use_dask=True,
+        verbosity=0, warm_start=False)</pre>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="cell border-box-sizing text_cell rendered">
+      <div class="prompt input_prompt">
+      </div>
+      <div class="inner_cell">
+       <div class="text_cell_render border-box-sizing rendered_html">
+        <h2 id="Learn-More">
+         Learn More
+         <a class="anchor-link" href="#Learn-More">
+          ¶
+         </a>
+        </h2>
+        <p>
+         See the
+         <a href="https://dask-ml.readthedocs.io/en/latest/">
+          Dask-ML
+         </a>
+         and
+         <a href="https://epistasislab.github.io/tpot/">
+          TPOT
+         </a>
+         documenation for more information on using Dask and TPOT.
+        </p>
+       </div>
+      </div>
+     </div>
+     <hr class="docutils"/>
+     <p>
+      <a class="reference external" href="https://raw.githubusercontent.com/ceball/dask-examples/master/./machine_learning/TPOT.ipynb">
+       Right click to download this notebook from GitHub.
+      </a>
+     </p>
+    </div>
+   </div>
+  </div>
+  <!-- END MAIN BODY OF DOCS ––––––––––––– -->
+  <footer class="footer">
+   <div class="footer-links">
+    <ul>
+     <li>
+      <span class="footer-title">
+       Links
+      </span>
+     </li>
+    </ul>
+    <ul>
+     <li>
+      <span class="footer-title">
+       Join Us
+      </span>
+     </li>
+     <li>
+      <a href="//github.com/dask/dask-examples">
+       Github
+      </a>
+     </li>
+    </ul>
+    <ul class="copyright">
+     <li>
+      2018 dask contributors
+     </li>
+    </ul>
+   </div>
+  </footer>
+  <!-- Google Analytics -->
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61554933-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+  <!-- MathJax Config -->
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+  </script>
+  <!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+ </body>
+</html>
